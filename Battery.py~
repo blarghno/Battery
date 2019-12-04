@@ -117,6 +117,6 @@ battery = Battery("battery_Config.txt")
 #arbitrary values
 print(battery)
 #irradiance data from line 2 to 100
-battery.readFileRange("SetupB.txt", 2, 10000)
+battery.readFileRange("SetupB.txt", 2, 1000000)
 
 
