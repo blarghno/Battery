@@ -1,0 +1,3 @@
+Format needs to be in: "nameOfAttribute = value"
+currentCapacity = 10
+maxCapacity = 20
