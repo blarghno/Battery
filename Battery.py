@@ -59,7 +59,7 @@ class Battery:
         self.__maxCapacity = value
     
     def __str__(self):
-        return (f'Max Capacity: {self.__maxCapacity} mAh\nCurrent Capacity: {self.__currentCapacity} mAh')
+        return (f'Max Capacity: {self.__maxCapacity} J\nCurrent Capacity: {self.__currentCapacity} J')
         
     def __repr__(self):
         return (f'{self.__class__.__name__}({self.__energyHarvested!r}')
@@ -74,15 +74,20 @@ class Battery:
                 self.__currentCapacity = self.__maxCapacity
             else:
                 self.__currentCapacity += energyStored
+            return 1
         elif(energyStored < 0):
             if(energyStored + self.__currentCapacity < 0):
                 self.currentCapacity = 0
+                return -1
             else:
                 self.__currentCapacity += energyStored
+            return 0
                 
     #86370 = 1day
     #reads the file from a range of line numbers
     def readFileRange(self, fileName, start, end):
+        inc = 0
+        fail = 0
         t = []
         d = []
         f = open(fileName, "r")
@@ -95,16 +100,24 @@ class Battery:
             time = int(data[0])
             irr = float(data[1])
             energy = self.convert(irr, self.AREA_OF_SENSOR, time-lasttime)
-            self.loadBattery(energy, self.__load * (time-lasttime))
+            q = self.loadBattery(energy, self.__load * (time-lasttime))
+            if (q == 1):
+                inc+=1
+            if (q == -1):
+                fail+=1
             t.append(time)
             d.append(self.__currentCapacity)
             #data.append(lc.getline(fileName, i).split()[1])
             #print(self.__currentCapacity)
         f.close()
-        print(t)
-        print(d)
-        print(len(t), len(d))
-        plt.scatter(t, d)
+        #print(t)
+        #print(d)
+        #print(len(t), len(d))
+        t2 = [t[i] for i in range(len(t)) if i % 3600 == 0]
+        d2 = [d[i] for i in range(len(d)) if i % 3600 == 0]
+        print("Stored",inc,"times out of",end-start,"% is",inc/(end-start))
+        print("Failed",fail,"times out of",end-start,"% is",fail/(end-start))
+        plt.scatter(t2, d2)
         plt.show()
 
     #def readFileEntire(self, fileName) 
@@ -117,6 +130,6 @@ battery = Battery("battery_Config.txt")
 #arbitrary values
 print(battery)
 #irradiance data from line 2 to 100
-battery.readFileRange("SetupB.txt", 2, 10000)
+battery.readFileRange("SetupC.txt", 1 , 1000001)
 
 

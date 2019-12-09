@@ -1,4 +1,4 @@
 Format needs to be in: "nameOfAttribute = value"
-currentCapacity = 10
-maxCapacity = 20
-load = 0.005
+currentCapacity = 0
+maxCapacity = 1000
+load = 0.05
